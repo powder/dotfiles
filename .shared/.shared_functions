@@ -1,0 +1,39 @@
+function install_vimplug() {
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+}
+
+function install_asdf() {
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.4.3
+
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
+}
+
+# clojure         https://github.com/vic/asdf-clojure.git
+# crystal         https://github.com/marciogm/asdf-crystal.git
+# elixir          https://github.com/asdf-vm/asdf-elixir
+# elm             https://github.com/vic/asdf-elm.git
+# erlang          https://github.com/asdf-vm/asdf-erlang.git
+# golang          https://github.com/kennyp/asdf-golang.git
+# idris           https://github.com/vic/asdf-idris.git
+# julia           https://github.com/rkyleg/asdf-julia.git
+# lua             https://github.com/Stratus3D/asdf-lua.git
+# luaJIT          https://github.com/smashedtoatoms/asdf-luaJIT.git
+# nodejs          https://github.com/asdf-vm/asdf-nodejs.git
+# ocaml           https://github.com/vic/asdf-ocaml.git
+# php             https://github.com/odarriba/asdf-php
+# python          https://github.com/tuvistavie/asdf-python
+# racket          https://github.com/vic/asdf-racket
+# ruby            https://github.com/asdf-vm/asdf-ruby
+# rust            https://github.com/code-lever/asdf-rust
+# sbt             https://github.com/lerencao/asdf-sbt
+
+function install_asdf_plugins() {
+  languages=(clojure crystal elixir elm erlang golang idris julia lua luaJIT nodejs ocaml php python racket ruby rust sbt)
+
+  for language in $languages; do
+    asdf plugin-add $language
+  done
+}
+

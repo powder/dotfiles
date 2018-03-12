@@ -1,0 +1,153 @@
+function install_zsh() {
+  curl -L http://install.ohmyz.sh | sh
+}
+
+function install_rbenv() {
+  git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+  echo 'eval "$(rbenv init -)"' >> ~/.
+  git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+  source ~/.zshrc
+}
+
+function install_homebrew() {
+  echo 'To install homebrew, switch to the appropriate user and enter the following command.'
+  echo ' '
+  echo '  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+  echo ' '
+}
+
+function set_host_name() {
+  sudo scutil --set HostName $1
+  sudo scutil --set LocalHostName $1
+  sudo scutil --set ComputerName $1
+}
+
+function hide_users() {
+  sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add <add users here>
+  sudo defaults write /Library/Preferences/com.apple.loginwindow Hide500Users -bool YES
+}
+
+# Functions for manipulating users/accounts on Mac OS X
+
+function change_user_id() {
+  CUI_USERNAME=$1
+  CUI_OLD_ID=$2
+  CUI_NEW_ID=$3
+
+  if [ "$#" -ne 3 ]; then
+    echo "Error: Must provide exactly 3 parameters"
+    echo "Usage: $0 USER_NAME OLD_ID NEW_ID" >&2
+    return 255
+  fi
+
+  if ! id -u $CUI_USERNAME > /dev/null 2>&1; then
+    echo "Error: $CUI_USERNAME is not a user on this system." >&2
+    echo "Usage: $0 USER_NAME OLD_ID NEW_ID" >&2
+    return 254
+  fi
+
+  sudo find /Users/$CUI_USERNAME -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find /Library -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find /Applications -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find /usr -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find /private/var/ -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find -xP / -user $CUI_OLD_ID -print0 | xargs -0 sudo chown -h $CUI_NEW_ID
+  sudo find -xP / -user $CUI_OLD_ID -ls
+
+  move_id_files $CUI_OLD_ID $CUI_NEW_ID
+
+  unset CUI_USERNAME
+  unset CUI_OLD_ID
+  unset CUI_NEW_ID
+
+  return 0
+}
+
+function get_id() {
+  if [ "$#" -ne 1 ]; then
+    echo "Error: Must provide exactly one paramater." >&2
+    echo "Usage: $0 USER_NAME" >&2
+    return 255
+  fi
+
+  if ! id -u $1 > /dev/null 2>&1; then
+    echo "Error: $1 is not a user on this system." >&2
+    echo "Usage: $0 USER_NAME" >&2
+    return 254
+  fi
+
+  dscl . -read /Users/$1 UniqueID | awk '{ print $2 }'
+  return 0
+}
+
+function set_id() {
+  if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 USER_NAME NEW_ID" >&2
+    return 255
+  fi
+
+  if ! id -u $1 > /dev/null 2>&1; then
+    echo "Error: $1 is not a user on this system." >&2
+    echo "Usage: $0 USER_NAME NEW_ID" >&2
+    return 254
+  fi
+
+  SID_USERNAME=$1
+  SID_OLD_ID=`get_id $SID_USERNAME`
+  SID_NEW_ID=$2
+
+  sudo dscl . -change /Users/$SID_USERNAME UniqueID $SID_OLD_ID $SID_NEW_ID
+
+  unset SID_USERNAME
+  unset SID_OLD_ID
+  unset SID_NEW_ID
+
+  return 0
+}
+
+function list_ids() {
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 IDS_TO_LIST" >&2
+    return 255
+  fi
+
+  dscl . -list /Users UniqueID | sort -nr -k 2 | head -n $1
+}
+
+function move_id_files() {
+  if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 OLD_ID NEW_ID" >&2
+    return 255
+  fi
+
+  sudo mv /private/var/db/launchd.db/com.apple.launchd.peruser.$1 /private/var/db/launchd.db/com.apple.launchd.peruser.$2
+  sudo mv /private/var/log/com.apple.launchd.peruser.$1 /private/var/log/com.apple.launchd.peruser.$2
+}
+
+function swush() {
+  if [ "$#" -ne 1 ]; then
+    echo "Error: Must provide exactly one parameter." >&2
+    echo "Usage: $0 USER" >&2
+    return 255
+  fi
+
+  SWUSH_USER=$1
+  CURRENT_USER=`whoami`
+
+  if ! id -u $SWUSH_USER > /dev/null 2>&1; then
+    echo "Error: $SWUSH_USER is not a user on this system." >&2
+    echo "Usage: $0 USER_NAME" >&2
+    return 254
+  fi
+
+  echo "[s] $CURRENT_USER switching to $SWUSH_USER."
+  echo "[s] Changing $TTY ownership to $SWUSH_USER."
+  sudo chown $SWUSH_USER $TTY
+  sudo su -l $SWUSH_USER
+  echo "[s] Changing $TTY ownership to $CURRENT_USER."
+  sudo chown $CURRENT_USER $TTY
+
+  unset $SWUSH_USER
+  unset $CURRENT_USER
+}

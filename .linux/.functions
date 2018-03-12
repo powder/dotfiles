@@ -1,0 +1,42 @@
+function install_zsh() {
+  curl -L http://install.ohmyz.sh | sh
+}
+
+function install_rbenv() {
+  git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+  cd ~/.rbenv && src/configure && make -C src
+  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+  echo 'eval "$(rbenv init -)"' >> ~/.
+  git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+  source ~/.zshrc
+}
+
+function install_homebrew() {
+}
+
+function swush() {
+  if [ "$#" -ne 1 ]; then
+    echo "Error: Must provide exactly one parameter." >&2
+    echo "Usage: $0 USER" >&2
+    return 255
+  fi
+
+  SWUSH_USER=$1
+  CURRENT_USER=`whoami`
+
+  if ! id -u $SWUSH_USER > /dev/null 2>&1; then
+    echo "Error: $SWUSH_USER is not a user on this system." >&2
+    echo "Usage: $0 USER_NAME" >&2
+    return 254
+  fi
+
+  echo "[s] $CURRENT_USER switching to $SWUSH_USER."
+  echo "[s] Changing $TTY ownership to $SWUSH_USER."
+  sudo chown $SWUSH_USER $TTY
+  sudo su -l $SWUSH_USER
+  echo "[s] Changing $TTY ownership to $CURRENT_USER."
+  sudo chown $CURRENT_USER $TTY
+
+  unset $SWUSH_USER
+  unset $CURRENT_USER
+}

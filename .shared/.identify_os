@@ -1,0 +1,48 @@
+#!/bin/bash
+
+script_name="OS Identification"
+script_logo="[osi]  -"
+script_version="1.1.0"
+
+msg() {
+  echo $script_logo $1
+}
+
+include() {
+  [[ -f "$1" ]] && source "$1"
+}
+
+msg "Loaded $script_name $script_version"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  msg "Loading Mac OS X aliases, functions, and settings."
+  include ~/.dotfiles/.mac_os/.install_functions
+  include ~/.dotfiles/.mac_os/.pre-defaults
+  include ~/.dotfiles/.mac_os/.aliases
+  include ~/.dotfiles/.mac_os/.functions
+  include ~/.dotfiles/.mac_os/.load_environment
+  include ~/.dotfiles/.mac_os/.ssh_agent
+  include ~/.dotfiles/.mac_os/.custom
+elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+  msg "loading Linux aliases, functions and settings."
+  include ~/.dotfiles/.linux/.install_functions
+  include ~/.dotfiles/.linux/.pre-defaults
+  include ~/.dotfiles/.linux/.aliases
+  include ~/.dotfiles/.linux/.functions
+  include ~/.dotfiles/.linux/.environment
+  include ~/.dotfiles/.linux/.post-defaults
+  if [[ "$SHELL" == "/bin/bash" ]]; then
+    msg "Detected Bash shell."
+  fi
+elif [[ "$OSTYPE" == "cygwin" ]]; then
+  msg "Loading windows aliases, functions, and settings."
+elif [[ "$OSTYPE" == "msys" ]]; then
+  msg "Loading windows aliases, functions, and settings."
+elif [[ "$OSTYPE" == "win32" ]]; then
+  msg "Loading windows aliases, functions, and settings."
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+  msg "Loading FreeBSD aliases, functions, and settings."
+else
+  msg "OS not identifiable."
+  msg "OS specific aliases, functions, and settings not loaded."
+fi
