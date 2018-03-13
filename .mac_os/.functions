@@ -24,7 +24,7 @@ function set_host_name() {
 }
 
 function hide_users() {
-  sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add <add users here>
+  sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add 
   sudo defaults write /Library/Preferences/com.apple.loginwindow Hide500Users -bool YES
 }
 

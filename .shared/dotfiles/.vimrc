@@ -24,6 +24,17 @@ call plug#begin()
   Plug 'scrooloose/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'altercation/vim-colors-solarized'
+  Plug 'tpope/vim-characterize'
+  Plug 'tpope/vim-commentary'
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'tommcdo/vim-lion'
+  Plug 'tpope/vim-repeat'
+  Plug 'svermeulen/vim-easyclip'
+  Plug 'itchyny/lightline.vim'
+  Plug 'Shougo/unite.vim'
+  Plug 'godlygeek/tabular'
+  Plug 'plasticboy/vim-markdown'
+  Plug 'tpope/vim-fugitive'
 call plug#end()
 
 " Disable classic vi emulation
