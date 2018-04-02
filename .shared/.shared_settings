@@ -2,23 +2,11 @@ script_name="Shared ZSH Settings"
 script_logo="[zsh]  -"
 script_version="1.1.0"
 
-msg() {
-	echo $script_logo $1
-}
-
-include() {
-	[[ -f "$1" ]] && source "$1"
-}
-
 msg "Loaded $script_name $script_version"
-
-
-export TERM=xterm-256color
 
 autoload -Uz colors && colors
 
 source ~/.dotfiles/.shared/zsh-libs/git.zsh
-
 source ~/.dotfiles/.shared/zsh-libs/spectrum.zsh
 source ~/.dotfiles/.shared/themes/whimsy.zsh-theme
 
