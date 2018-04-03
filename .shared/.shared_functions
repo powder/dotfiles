@@ -43,7 +43,7 @@ function install_asdf() {
 # sbt             https://github.com/lerencao/asdf-sbt
 
 function install_asdf_plugins() {
-  languages=(clojure crystal elixir elm erlang golang idris julia lua luaJIT nodejs ocaml php python racket ruby rust sbt)
+  languages=(clojure crystal elixir elm erlang golang idris julia lua luaJIT nodejs ocaml php python racket ruby rust sbt swift)
 
   for language in $languages; do
     asdf plugin-add $language

@@ -35,7 +35,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'scrooloose/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
 
-  " Deroplete
+  " Deoplete
   if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   else
@@ -236,5 +236,3 @@ noremap <silent> <C-a> <Esc>:call StripTrailingWhitespace()<CR>
 if filereadable(expand("~/.vimrc.after"))
   source ~/.vimrc.after
 endif
-
-
