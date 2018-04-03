@@ -4,14 +4,6 @@ script_name="OS Identification"
 script_logo="[osi]  -"
 script_version="1.1.0"
 
-msg() {
-  echo $script_logo $1
-}
-
-include() {
-  [[ -f "$1" ]] && source "$1"
-}
-
 msg "Loaded $script_name $script_version"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
